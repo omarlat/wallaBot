@@ -1,0 +1,30 @@
+{
+  "name": "wallabot",
+  "version": "1.0.0",
+  "description": "Telegram bot for Wallapop",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/omarlat/wallaBot.git"
+  },
+  "keywords": [
+    "node.js",
+    "telegram",
+    "wallapop",
+    "bot",
+    "mysql"
+  ],
+  "author": "Oscar Martínez Latasa",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/omarlat/wallaBot/issues"
+  },
+  "homepage": "https://github.com/omarlat/wallaBot#readme",
+  "dependencies": {
+    "env2": "^2.2.0",
+    "node-telegram-bot-api": "^0.28.0"
+  }
+}
