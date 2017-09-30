@@ -24,7 +24,10 @@
   },
   "homepage": "https://github.com/omarlat/wallaBot#readme",
   "dependencies": {
+    "bluebird": "^3.5.0",
     "env2": "^2.2.0",
-    "node-telegram-bot-api": "^0.28.0"
+    "mysql": "^2.14.1",
+    "node-telegram-bot-api": "^0.28.0",
+    "promise-mysql": "^3.1.0"
   }
 }
