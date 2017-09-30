@@ -1,56 +1,72 @@
-var db=require('../dbconnection');
+var pool=require('../dbconnection');
 
 var wallapopModel = {};
 
-wallapopModel.getSearchs = function(callback)
-{
-		db.query('SELECT * FROM WALLA_SEARCHS ORDER BY ID', function(error, rows) {
-			if(error)
-			{
-				throw error;
-			}
-			else
-			{
-				callback(null, rows);
-			}
-		});
+
+wallapopModel.getItem = async function(item) {
+    try {
+        //Find item
+
+				console.log(item.itemId);
+        let itemData = await pool.query(
+            `
+            SELECT * FROM WALLA_ITEMS WHERE ID = ?
+            `,
+            [item.itemId]
+        );
+
+        return itemData[0];
+    } catch (error) {
+        console.log(error);
+        //ctx.throw(400, 'INVALID_DATA');
+    }
 }
 
-wallapopModel.getItem = function(item,callback){
+wallapopModel.getSearch = async function() {
+    try {
+        //Find item
 
-		var sql = 'SELECT * FROM WALLA_ITEMS WHERE ID = ?';
-		var id = item.itemId;
-		console.log(id);
-		db.query(sql, [id],function(error, row)
-		{
-			if(error)
-			{
-				throw error;
-			}
-			else
-			{
-				callback(null, row, item);
-			}
-		});
+        let itemData = await pool.query(
+            `
+            SELECT * FROM WALLA_SEARCHS ORDER BY LAST ASC
+            `
+        );
 
+        return itemData[0];
+    } catch (error) {
+        console.log(error);
+        //ctx.throw(400, 'INVALID_DATA');
+    }
 }
 
-wallapopModel.insertItem = function(item,callback)
-{
+wallapopModel.updateSearch = async function(item) {
+    try {
+        await pool.query(
+            `
+            UPDATE WALLA_SEARCHS SET LAST=sysdate() WHERE ID = ?
+            `,
+            [item]
+        );
 
-		var sql = 'INSERT INTO WALLA_ITEMS (ID, TITLE, DESCRIPTION, PRICE) VALUES (?,?,?,?)';
-		db.query(sql, [item.itemId, item.title, item.description,item.price],function(error, row)
-		{
-			if(error)
-			{
-				throw error;
-			}
-			else
-			{
-				callback(null, row);
-			}
-		});
+    } catch (error) {
+        console.log(error);
+        //ctx.throw(400, 'INVALID_DATA');
+    }
+}
 
+wallapopModel.insertItem = async function(item) {
+    try {
+        await pool.query(
+            `
+            INSERT INTO WALLA_ITEMS (ID, TITLE, DESCRIPTION, PRICE) VALUES (?,?,?,?)
+            `,
+            [item.itemId, item.title, item.description,(item.price).replace('€','')]
+        );
+
+    } catch (error) {
+        console.log(error);
+        //ctx.throw(400, 'INVALID_DATA');
+    }
 }
 
 module.exports = wallapopModel;

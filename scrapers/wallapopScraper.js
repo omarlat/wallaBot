@@ -1,15 +1,18 @@
 var https = require('https');
-var wallapopModel = require('../models/wallapopModelAsync.js');
+var wallapopModel = require('../models/wallapopModel.js');
 var wallapopScraper = {};
 
-var options = {
-  host: 'es.wallapop.com',
-  port: 443,
-  path: '/rest/items?kws=x-men&lat=43.308567&lng=-2.994161000000001&minPrice=&maxPrice=&dist=20&markAsIds=&publishDate=7&verticalId=&order=creationDate-des',
-  method: 'GET'
-}
+wallapopScraper.execute = async function(cb){
 
-wallapopScraper.execute = function(cb){
+  search  = await wallapopModel.getSearch();
+
+  var options = {
+    host: 'es.wallapop.com',
+    port: 443,
+    path: '/rest/items?kws='+search.KWS+'&lat='+search.LAT+'&lng='+search.LONG+'&minPrice=&maxPrice=&dist='+search.DIST+'&markAsIds=&publishDate='+search.PUBLISHDATE+'&verticalId=&order=creationDate-des',
+    method: 'GET'
+  }
+
   https.request(options, function(res){
     console.log("status code: ", res.statusCode);
     var body = '';
@@ -21,18 +24,18 @@ wallapopScraper.execute = function(cb){
       var result = JSON.parse(body);
       var messages = [];
       if(result.items.length>0){
-        //messages.push('<b>Búsqueda de x-men con '+result.items.length+' resultados</b>');
         for (var i = 0; i < result.items.length; i++) {
           item  = await wallapopModel.getItem(result.items[i]);
           if(item=== undefined){
               console.log('Item dont exists;');
               await wallapopModel.insertItem(result.items[i]);
-              messages.push('<a href="https://es.wallapop.com/item/'+result.items[i].url+'">('+eval(i+1)+' de '+result.items[i].length+') > '+result.items[i].price+' en '+result.items[i].itemLocation.city+'</a>');
+              messages.push('<a href="https://es.wallapop.com/item/'+result.items[i].url+'">('+eval(i+1)+' de '+result.items.length+') > '+result.items[i].price+' en '+result.items[i].itemLocation.city+'</a>');
             }
         }
       }else{
         console.log('Sin resultados en la busqueda de wallapop');
       }
+      await wallapopModel.updateSearch(search.ID);
       cb(null, messages);
     });
 
