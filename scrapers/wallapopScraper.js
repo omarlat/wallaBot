@@ -9,10 +9,10 @@ wallapopScraper.execute = async function(cb){
   var options = {
     host: 'es.wallapop.com',
     port: 443,
-    path: '/rest/items?kws='+search.KWS+'&lat='+search.LAT+'&lng='+search.LONG+'&minPrice=&maxPrice=&dist='+search.DIST+'&markAsIds=&publishDate='+search.PUBLISHDATE+'&verticalId=&order=creationDate-des',
+    path: '/rest/items?kws='+(search.KWS).replace(' ','%20')+'&lat='+search.LAT+'&lng='+search.LONG+'&minPrice=&maxPrice=&dist='+search.DIST+'&markAsIds=&publishDate='+search.PUBLISHDATE+'&verticalId=&order=creationDate-des',
     method: 'GET'
   }
-
+  console.log(options.path);
   https.request(options, function(res){
     console.log("status code: ", res.statusCode);
     var body = '';

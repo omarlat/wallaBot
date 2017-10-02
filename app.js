@@ -1,15 +1,16 @@
 const env = require('env2')('./.env');
 var wallapopScraper = require('./scrapers/wallapopScraper.js');
 var bot = require('./bot.js');
-var wallapopModel = require('./models/wallapopModel.js');
-var pool=require('./dbconnection');
+var CronJob = require('cron').CronJob;
 
 
-wallapopScraper.execute(function(err, messages){
-  if(err){
-    return console.log('Error while trying to get wallapop results: ', err);
-  }else{
-    bot.sendMessages(messages);
-    pool.end();
-  }
-});
+
+new CronJob('00 */1 * * * *', function() {
+  wallapopScraper.execute(function(err, messages){
+    if(err){
+      return console.log('Error while trying to get wallapop results: ', err);
+    }else{
+      bot.sendMessages(messages);
+    }
+  });
+}, null, true, 'Europe/Madrid');

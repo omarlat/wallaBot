@@ -69,4 +69,20 @@ wallapopModel.insertItem = async function(item) {
     }
 }
 
+wallapopModel.insertSearch = async function(kws) {
+    try {
+        await pool.query(
+            `
+            INSERT INTO WALLA_SEARCHS(KWS)
+            VALUES (?)
+            `,
+            [kws]
+        );
+
+    } catch (error) {
+        console.log(error);
+        //ctx.throw(400, 'INVALID_DATA');
+    }
+}
+
 module.exports = wallapopModel;
