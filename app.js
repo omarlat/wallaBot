@@ -5,7 +5,7 @@ var CronJob = require('cron').CronJob;
 
 
 
-new CronJob('00 */1 * * * *', function() {
+new CronJob('00 */5 * * * *', function() {
   wallapopScraper.execute(function(err, messages){
     if(err){
       return console.log('Error while trying to get wallapop results: ', err);
