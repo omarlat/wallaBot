@@ -4,8 +4,8 @@ var wallapopScraper = {};
 
 wallapopScraper.execute = async function(cb){
 
-  search  = await wallapopModel.getSearch();
-
+  searchs  = await wallapopModel.getSearchs();
+  search = searchs[0];
   var options = {
     host: 'es.wallapop.com',
     port: 443,
@@ -27,9 +27,8 @@ wallapopScraper.execute = async function(cb){
         for (var i = 0; i < result.items.length; i++) {
           item  = await wallapopModel.getItem(result.items[i]);
           if(item=== undefined){
-              console.log('Item dont exists;');
               await wallapopModel.insertItem(result.items[i]);
-              messages.push('<a href="https://es.wallapop.com/item/'+result.items[i].url+'">('+eval(i+1)+' de '+result.items.length+') > '+result.items[i].price+' en '+result.items[i].itemLocation.city+'</a>');
+              messages.push('<a href="https://es.wallapop.com/item/'+result.items[i].url+'">Resultado de '+search.KWS+' > '+result.items[i].price+' en '+result.items[i].itemLocation.city+'</a>');
             }
         }
       }else{

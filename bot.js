@@ -23,7 +23,7 @@ myBot.sendMessages = async function (messages){
   }
 }
 
-bot.on('text', function (msg) {
+bot.on('text', async function (msg) {
   var chatId = msg.chat.id;
   var text = msg.text.toLowerCase();
   if(chatId ==telegramChatId){
@@ -31,7 +31,17 @@ bot.on('text', function (msg) {
       var kws = text.substr(4);
       wallapopModel.insertSearch(kws);
       bot.sendMessage(chatId,'Busqueda de '+kws+' añadida');
-    }else{
+    }else if(text.startsWith("remove")){
+        var kws = text.substr(7);
+        wallapopModel.deleteSearch(kws);
+        bot.sendMessage(chatId,'Busqueda de '+kws+' eliminada');
+    }else if(text == "list"){
+        searchs  = await wallapopModel.getSearchs();
+        for (var i = 0; i < searchs.length; i++) {          
+            bot.sendMessage(chatId,searchs[i].KWS);
+        }
+    }
+    else{
       bot.sendMessage(chatId,"No entiendo tu orden");
     }
   }

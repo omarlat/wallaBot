@@ -22,7 +22,7 @@ wallapopModel.getItem = async function(item) {
     }
 }
 
-wallapopModel.getSearch = async function() {
+wallapopModel.getSearchs = async function() {
     try {
         //Find item
 
@@ -32,7 +32,7 @@ wallapopModel.getSearch = async function() {
             `
         );
 
-        return itemData[0];
+        return itemData;
     } catch (error) {
         console.log(error);
         //ctx.throw(400, 'INVALID_DATA');
@@ -75,6 +75,21 @@ wallapopModel.insertSearch = async function(kws) {
             `
             INSERT INTO WALLA_SEARCHS(KWS)
             VALUES (?)
+            `,
+            [kws]
+        );
+
+    } catch (error) {
+        console.log(error);
+        //ctx.throw(400, 'INVALID_DATA');
+    }
+}
+
+wallapopModel.deleteSearch = async function(kws) {
+    try {
+        await pool.query(
+            `
+            DELETE FROM WALLA_SEARCHS WHERE KWS = ?
             `,
             [kws]
         );
