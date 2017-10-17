@@ -1,18 +1,16 @@
-var pool=require('../dbconnection');
+var pool = require('./db-connection');
 
-var wallapopModel = {};
+var wallabotMySQL = {};
 
-
-wallapopModel.getItem = async function(item) {
+wallabotMySQL.getItem = async function(item) {
     try {
         //Find item
 
-				console.log(item.itemId);
+        console.log(item.itemId);
         let itemData = await pool.query(
             `
             SELECT * FROM WALLA_ITEMS WHERE ID = ?
-            `,
-            [item.itemId]
+            `, [item.itemId]
         );
 
         return itemData[0];
@@ -22,7 +20,7 @@ wallapopModel.getItem = async function(item) {
     }
 }
 
-wallapopModel.getSearchs = async function() {
+wallabotMySQL.getAllSearchCriteria = async function() {
     try {
         //Find item
 
@@ -39,13 +37,12 @@ wallapopModel.getSearchs = async function() {
     }
 }
 
-wallapopModel.updateSearch = async function(item) {
+wallabotMySQL.updateSearchCriteria = async function(criteria) {
     try {
         await pool.query(
             `
             UPDATE WALLA_SEARCHS SET LAST=sysdate() WHERE ID = ?
-            `,
-            [item]
+            `, [criteria.ID]
         );
 
     } catch (error) {
@@ -54,13 +51,14 @@ wallapopModel.updateSearch = async function(item) {
     }
 }
 
-wallapopModel.insertItem = async function(item) {
+wallabotMySQL.insertItem = async function(item) {
     try {
         await pool.query(
             `
             INSERT INTO WALLA_ITEMS (ID, TITLE, DESCRIPTION, PRICE) VALUES (?,?,?,?)
-            `,
-            [item.itemId, item.title, item.description,(item.price).replace('€','')]
+            `, [
+                item.itemId, item.title, item.description, (item.price)
+                .replace('€', '')]
         );
 
     } catch (error) {
@@ -69,14 +67,13 @@ wallapopModel.insertItem = async function(item) {
     }
 }
 
-wallapopModel.insertSearch = async function(kws) {
+wallabotMySQL.insertSearchCriteria = async function(criteria) {
     try {
         await pool.query(
             `
             INSERT INTO WALLA_SEARCHS(KWS)
             VALUES (?)
-            `,
-            [kws]
+            `, [criteria.KWS]
         );
 
     } catch (error) {
@@ -85,13 +82,12 @@ wallapopModel.insertSearch = async function(kws) {
     }
 }
 
-wallapopModel.deleteSearch = async function(kws) {
+wallabotMySQL.deleteSearchCriteria = async function(criteria) {
     try {
         await pool.query(
             `
             DELETE FROM WALLA_SEARCHS WHERE KWS = ?
-            `,
-            [kws]
+            `, [criteria.KWS]
         );
 
     } catch (error) {
@@ -100,4 +96,4 @@ wallapopModel.deleteSearch = async function(kws) {
     }
 }
 
-module.exports = wallapopModel;
+module.exports = wallabotMySQL;

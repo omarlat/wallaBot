@@ -1,34 +1,40 @@
 {
-  "name": "wallabot",
-  "version": "1.0.0",
-  "description": "Telegram bot for Wallapop",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/omarlat/wallaBot.git"
-  },
-  "keywords": [
+    "name": "wallabot",
+    "version": "2.0.0",
+    "description": "Telegram bot for Wallapop",
+    "main": "app.js",
+    "scripts": {
+        "start": "node app.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/omarlat/wallaBot.git"
+    },
+    "keywords": [
     "node.js",
     "telegram",
     "wallapop",
     "bot",
     "mysql"
   ],
-  "author": "Oscar Martínez Latasa",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/omarlat/wallaBot/issues"
-  },
-  "homepage": "https://github.com/omarlat/wallaBot#readme",
-  "dependencies": {
-    "bluebird": "^3.5.0",
-    "cron": "^1.3.0",
-    "env2": "^2.2.0",
-    "mysql": "^2.14.1",
-    "node-telegram-bot-api": "^0.28.0",
-    "promise-mysql": "^3.1.0"
-  }
+    "engines": {
+        "node": "8.6.0"
+    },
+    "author": "Oscar Martínez Latasa",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/omarlat/wallaBot/issues"
+    },
+    "homepage": "https://github.com/omarlat/wallaBot#readme",
+    "dependencies": {
+        "bluebird": "^3.5.0",
+        "cron": "^1.3.0",
+        "env2": "^2.2.0",
+        "firebase-admin": "^5.4.1",
+        "mysql": "^2.14.1",
+        "node-telegram-bot-api": "^0.28.0",
+        "promise-mysql": "^3.1.0"
+    },
+    "devDependencies": {}
 }
