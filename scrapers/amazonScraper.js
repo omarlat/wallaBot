@@ -35,10 +35,10 @@ amazonScraper.execute = async function(cb){
           item  = await amazonModel.getItem(search.ID);
           if(item=== undefined){
               await amazonModel.insertItem(search.ID, search.ITEM_ID, search.CHAT_ID, price, title);
-              messages.push('<a href="https://www.amazon.es/gp/product/'+search.ITEM_ID+'">PRECIO ACTUAL DE '+title+': '+price+'</a>');
+              messages.push('<a href="https://www.amazon.es/gp/product/'+search.ITEM_ID+'">PRECIO ACTUAL DE '+title+': '+price+'€</a>');
           }else if(item.PRICE>price){
               await amazonModel.updateItem(search.ID, price);
-              messages.push('<a href="https://www.amazon.es/gp/product/'+search.ITEM_ID+'">BAJADA DE PRECIO DE '+title+' de '+item.PRICE+' a '+price+'</a>');
+              messages.push('<a href="https://www.amazon.es/gp/product/'+search.ITEM_ID+'">BAJADA DE PRECIO DE '+title+' de '+item.PRICE+'€ a '+price+'€</a>');
           }
       }else{
         console.log('Sin resultados de precio');

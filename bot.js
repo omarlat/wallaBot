@@ -27,6 +27,7 @@ bot.on('text', async function (msg) {
   var chatId = msg.chat.id;
   var text = msg.text;
   console.log(chatId);
+  if(chatId ==telegramChatId || chatId=='11418958'){
     if(text.startsWith("add")){
       var item_id = text.substr(4);
       amazonModel.insertSearch(item_id, chatId);
@@ -36,14 +37,15 @@ bot.on('text', async function (msg) {
         amazonModel.deleteSearch(item_id, chatId);
         bot.sendMessage(chatId,'Busqueda de '+item_id+' eliminada');
     }else if(text == "list"){
-        searchs  = await amazonModel.getSearchs();
+        searchs  = await amazonModel.getItems(chatId);
         for (var i = 0; i < searchs.length; i++) {
-            bot.sendMessage(chatId,searchs[i].ID_ITEM);
+            bot.sendMessage(chatId,searchs[i].TITLE+': '+searchs[i].PRICE+'€');
         }
     }
     else{
       bot.sendMessage(chatId,"No entiendo tu orden");
     }
+  }
 });
 
 

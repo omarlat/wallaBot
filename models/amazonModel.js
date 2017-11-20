@@ -37,6 +37,24 @@ amazonModel.getSearchs = async function() {
     }
 }
 
+amazonModel.getItems = async function(chatId) {
+    try {
+        //Find item
+
+        let itemData = await pool.query(
+            `
+            SELECT * FROM AMAZON_ITEMS WHERE CHAT_ID=?
+            `,
+            [chatId]
+        );
+
+        return itemData;
+    } catch (error) {
+        console.log(error);
+        //ctx.throw(400, 'INVALID_DATA');
+    }
+}
+
 amazonModel.updateSearch = async function(item) {
     try {
         await pool.query(
