@@ -38,7 +38,7 @@ bot.on('text', async function (msg) {
     }else if(text == "list"){
         searchs  = await amazonModel.getItems(chatId);
         for (var i = 0; i < searchs.length; i++) {
-            bot.sendMessage(chatId,searchs[i].TITLE+': '+chatId,searchs[i].ITEM_ID+' > '+searchs[i].PRICE+'€');
+            bot.sendMessage(chatId,searchs[i].TITLE+': '+searchs[i].ITEM_ID+' > '+searchs[i].PRICE+'€');
         }
     }
     else{
