@@ -39,6 +39,9 @@ amazonScraper.execute = async function(cb){
           }else if(item.PRICE>price){
               await amazonModel.updateItem(search.ID, price);
               messages.push('<a href="https://www.amazon.es/gp/product/'+search.ITEM_ID+'">BAJADA DE PRECIO DE '+title+' de '+item.PRICE+'€ a '+price+'€</a>');
+          }else if(item.PRICE<price){
+              await amazonModel.updateItem(search.ID, price);
+              messages.push('<a href="https://www.amazon.es/gp/product/'+search.ITEM_ID+'">SUBIDA DE PRECIO DE '+title+' de '+item.PRICE+'€ a '+price+'€</a>');
           }
       }else{
         console.log('Sin resultados de precio');
