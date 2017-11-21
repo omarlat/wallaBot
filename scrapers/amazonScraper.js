@@ -32,25 +32,25 @@ amazonScraper.execute = async function (cb) {
           $('.a-span12 span.a-size-medium.a-color-price').each(function (i, element) {
             var el = $(this);
             price = el.text().replace('EUR ', '').replace(',', '.');
-            console.log(price);
+            console.log("Price: "+price);
           })
           var messages = [];
           if (price != "") {
-            item = await amazonModel.getItem(search.id);
-            if (item === undefined) {
-              await amazonModel.insertItem(search.id, search.item_id, search.chat_id, price, title);
+            item = await amazonModel.getItem(search._id);
+            if (!item) {
+              await amazonModel.insertItem(search._id, search.item_id, search.chat_id, price, title);
               messages.push('<a href="https://www.amazon.es/gp/product/' + search.item_id + '">PRECIO ACTUAL DE ' + title + ': ' + price + '€</a>');
-            } else if (item.price > price) {
-              await amazonModel.updateItem(search.id, price);
+            } else if (parseFloat(item.price) > parseFloat(price)) {
+              await amazonModel.updateItem(search._id, price);
               messages.push('<a href="https://www.amazon.es/gp/product/' + search.item_id + '">BAJADA DE PRECIO DE ' + title + ' de ' + item.price + '€ a ' + price + '€</a>');
-            } else if (item.price < price) {
-              await amazonModel.updateItem(search.id, price);
+            } else if (parseFloat(item.price) < parseFloat(price)) {
+              await amazonModel.updateItem(search._id, price);
               messages.push('<a href="https://www.amazon.es/gp/product/' + search.item_id + '">SUBIDA DE PRECIO DE ' + title + ' de ' + item.price + '€ a ' + price + '€</a>');
             }
           } else {
             console.log('Sin resultados de precio');
           }
-          await amazonModel.updateSearch(search.id);
+          await amazonModel.updateSearch(search._id);
           cb(null, messages, search.chat_id);
         });
 

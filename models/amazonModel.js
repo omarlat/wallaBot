@@ -15,10 +15,10 @@ db.searches = new Datastore({
 var amazonModel = {};
 
 
-amazonModel.getItem = async function (item) {
+amazonModel.getItem = async function (search_id) {
     return new Promise(function (resolve, reject) {
-        db.items.find({
-            id: item
+        db.items.findOne({
+            search_id: search_id
         }, function (err, docs) {
             if (err) {
                 reject(err);
@@ -31,13 +31,16 @@ amazonModel.getItem = async function (item) {
 
 amazonModel.getSearchs = async function () {
     return new Promise(function (resolve, reject) {
-        db.searches.find({}, function (err, docs) {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(docs);
-            }
-        })
+        db.searches.find({})
+            .sort({
+                last: -1
+            }).exec(function (err, docs) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(docs);
+                }
+            })
     });
 }
 
@@ -57,6 +60,8 @@ amazonModel.updateSearch = async function (search) {
     return new Promise(function (resolve, reject) {
         db.searches.update({
             id: search
+        }, {
+            last: new Date()
         }, function (err, numReplaced) {
             if (err) {
                 reject(err);
@@ -67,15 +72,15 @@ amazonModel.updateSearch = async function (search) {
     });
 }
 
-amazonModel.insertItem = async function (id, item_id, chat_id, price, title) {
+amazonModel.insertItem = async function (search_id, item_id, chat_id, price, title) {
     var item = {
-        id: id,
+        search_id: search_id,
         item_id: item_id,
         chat_id: chat_id,
         price: price.replace(',', '.'),
         title: title
     };
-    
+
     return new Promise(function (resolve, reject) {
         db.items.insert(item, function (err, newDoc) {
             if (err) {
@@ -87,10 +92,10 @@ amazonModel.insertItem = async function (id, item_id, chat_id, price, title) {
     });
 }
 
-amazonModel.updateItem = async function (id, price) {
+amazonModel.updateItem = async function (search_idid, price) {
     return new Promise(function (resolve, reject) {
         db.items.update({
-            id: id
+            search_id: search_id
         }, {
             price: price
         }, {}, function (err, numReplaced) {
@@ -106,7 +111,8 @@ amazonModel.updateItem = async function (id, price) {
 amazonModel.insertSearch = async function (item_id, chat_id) {
     var search = {
         item_id: item_id,
-        chat_id: chat_id
+        chat_id: chat_id,
+        last: new Date()
     };
     return new Promise(function (resolve, reject) {
         db.searches.insert(search, function (err, newDoc) {
