@@ -46,7 +46,7 @@ amazonModel.getSearchs = async function () {
 
 amazonModel.getItems = async function (chatId) {
     return new Promise(function (resolve, reject) {
-        db.items.find({}, function (err, docs) {
+        db.items.find({chat_id: chatId}, function (err, docs) {
             if (err) {
                 reject(err);
             } else {
