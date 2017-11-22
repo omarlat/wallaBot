@@ -24,25 +24,25 @@ myBot.sendMessages = async function (messages, chatId){
 }
 
 bot.on('text', async function (msg) {
-  var chatId = msg.chat.id;
+  var chat_id = msg.chat.id;
   var text = msg.text;
-  console.log(chatId);
-    if(text.startsWith("add")){
+  console.log(chat_id);
+    if(text.toLowerCase().startsWith("add")){
       var item_id = text.substr(4);
-      amazonModel.insertSearch(item_id, chatId);
-      bot.sendMessage(chatId,'Busqueda de '+item_id+' añadida');
-    }else if(text.startsWith("remove")){
+      amazonModel.insertSearch(item_id, chat_id);
+      bot.sendMessage(chat_id,'Busqueda de '+item_id+' añadida');
+    }else if(text.toLowerCase().startsWith("remove")){
         var item_id = text.substr(7);
-        amazonModel.deleteSearch(item_id, chatId);
-        bot.sendMessage(chatId,'Busqueda de '+item_id+' eliminada');
-    }else if(text == "list"){
-        searchs  = await amazonModel.getItems(chatId);
-        for (var i = 0; i < searchs.length; i++) {
-            bot.sendMessage(chatId,searchs[i].TITLE+': '+searchs[i].ITEM_ID+' > '+searchs[i].PRICE+'€');
-        }
+        amazonModel.deleteSearch(item_id, chat_id);
+        bot.sendMessage(chat_id,'Busqueda de '+item_id+' eliminada');
+    }else if(text.toLowerCase() == "list"){
+        items = await amazonModel.getItems(chat_id);
+        items.forEach( (item) => {
+          bot.sendMessage(chat_id, item.title +': '+item.item_id+' > '+item.price+'€');
+        });
     }
     else{
-      bot.sendMessage(chatId,"No entiendo tu orden");
+      bot.sendMessage(chat_id,"No entiendo tu orden");
     }
 });
 

@@ -1,134 +1,143 @@
-var pool=require('../dbconnection');
+var pool = require('../dbconnection');
+var Datastore = require('nedb');
+
+var db = {};
+
+db.items = new Datastore({
+    filename: './db/items.db',
+    autoload: true
+});
+db.searches = new Datastore({
+    filename: './db/searches.db',
+    autoload: true
+});
 
 var amazonModel = {};
 
 
-amazonModel.getItem = async function(item) {
-    try {
-        //Find item
-        let itemData = await pool.query(
-            `
-            SELECT * FROM AMAZON_ITEMS WHERE ID = ?
-            `,
-            [item]
-        );
-
-        return itemData[0];
-    } catch (error) {
-        console.log(error);
-        //ctx.throw(400, 'INVALID_DATA');
-    }
+amazonModel.getItem = async function (search_id) {
+    return new Promise(function (resolve, reject) {
+        db.items.findOne({
+            search_id: search_id
+        }, function (err, docs) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(docs);
+            }
+        })
+    });
 }
 
-amazonModel.getSearchs = async function() {
-    try {
-        //Find item
-
-        let itemData = await pool.query(
-            `
-            SELECT * FROM AMAZON_SEARCHS ORDER BY LAST ASC
-            `
-        );
-
-        return itemData;
-    } catch (error) {
-        console.log(error);
-        //ctx.throw(400, 'INVALID_DATA');
-    }
+amazonModel.getSearchs = async function () {
+    return new Promise(function (resolve, reject) {
+        db.searches.find({})
+            .sort({
+                last: -1
+            }).exec(function (err, docs) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(docs);
+                }
+            })
+    });
 }
 
-amazonModel.getItems = async function(chatId) {
-    try {
-        //Find item
-
-        let itemData = await pool.query(
-            `
-            SELECT * FROM AMAZON_ITEMS WHERE CHAT_ID=?
-            `,
-            [chatId]
-        );
-
-        return itemData;
-    } catch (error) {
-        console.log(error);
-        //ctx.throw(400, 'INVALID_DATA');
-    }
+amazonModel.getItems = async function (chatId) {
+    return new Promise(function (resolve, reject) {
+        db.items.find({chat_id: chatId}, function (err, docs) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(docs);
+            }
+        })
+    });
 }
 
-amazonModel.updateSearch = async function(item) {
-    try {
-        await pool.query(
-            `
-            UPDATE AMAZON_SEARCHS SET LAST=sysdate() WHERE ID = ?
-            `,
-            [item]
-        );
-
-    } catch (error) {
-        console.log(error);
-        //ctx.throw(400, 'INVALID_DATA');
-    }
+amazonModel.updateSearch = async function (search) {
+    return new Promise(function (resolve, reject) {
+        db.searches.update({
+            id: search
+        }, {
+            last: new Date()
+        }, function (err, numReplaced) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(numReplaced);
+            }
+        })
+    });
 }
 
-amazonModel.insertItem = async function(id, item_id, chat_id, price, title) {
-    try {
-        await pool.query(
-            `
-            INSERT INTO AMAZON_ITEMS (ID, ITEM_ID, CHAT_ID, PRICE, TITLE) VALUES (?,?,?,?,?)
-            `,
-            [id, item_id, chat_id, (price).replace(',','.'), title]
-        );
+amazonModel.insertItem = async function (search_id, item_id, chat_id, price, title) {
+    var item = {
+        search_id: search_id,
+        item_id: item_id,
+        chat_id: chat_id,
+        price: price.replace(',', '.'),
+        title: title
+    };
 
-    } catch (error) {
-        console.log(error);
-        //ctx.throw(400, 'INVALID_DATA');
-    }
+    return new Promise(function (resolve, reject) {
+        db.items.insert(item, function (err, newDoc) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(newDoc);
+            }
+        })
+    });
 }
 
-amazonModel.updateItem = async function(id, price) {
-    try {
-        await pool.query(
-            `
-            UPDATE AMAZON_ITEMS SET PRICE= ?  WHERE ID = ?
-            `,
-            [price, id]
-        );
-
-    } catch (error) {
-        console.log(error);
-        //ctx.throw(400, 'INVALID_DATA');
-    }
+amazonModel.updateItem = async function (search_idid, price) {
+    return new Promise(function (resolve, reject) {
+        db.items.update({
+            search_id: search_id
+        }, {
+            price: price
+        }, {}, function (err, numReplaced) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(numReplaced);
+            }
+        })
+    });
 }
 
-amazonModel.insertSearch = async function(item_id, chat_id) {
-    try {
-        await pool.query(
-            `
-            INSERT INTO AMAZON_SEARCHS(ITEM_ID, CHAT_ID)
-            VALUES (?,?)
-            `,
-            [item_id, chat_id]
-        );
-
-    } catch (error) {
-        console.log(error);
-        //ctx.throw(400, 'INVALID_DATA');
-    }
+amazonModel.insertSearch = async function (item_id, chat_id) {
+    var search = {
+        item_id: item_id,
+        chat_id: chat_id,
+        last: new Date()
+    };
+    return new Promise(function (resolve, reject) {
+        db.searches.insert(search, function (err, newDoc) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(newDoc);
+            }
+        })
+    });
 }
 
-amazonModel.deleteSearch = async function(item_id, chat_id) {
-    try {
-        await pool.query(
-            `
-            DELETE FROM AMAZON_SEARCHS WHERE ITEM_ID = ? AND CHAT_ID = ?
-            `,
-            [item_id, chat_id]
-        );
-
-    } catch (error) {
-        console.log(error);
-        //ctx.throw(400, 'INVALID_DATA');
-    }
+amazonModel.deleteSearch = async function (item_id, chat_id) {
+    return new Promise(function (resolve, reject) {
+        db.searches.remove({
+            item_id: item_id,
+            chat_id: chat_id
+        }, {}, function (err, numRemoved) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(numRemoved);
+            }
+        })
+    });
 }
 
 module.exports = amazonModel;
