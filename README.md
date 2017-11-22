@@ -22,5 +22,5 @@ $ export TG_TOKEN=???????????????????
 ### DOCKER
 
 ```sh
-docker run -d -e TG_TOKEN=432506889:AAHkPczqTPMl1TBLk9G4CQWOe3Bj-JYprzQ omarlat/wallabot
+docker run -d -e TG_TOKEN=TelegramBotToken omarlat/wallabot
 ```

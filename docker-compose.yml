@@ -1,0 +1,7 @@
+version: '2'
+services:
+
+  wallabot:
+    image: omarlat/wallabot:latest
+    environment:
+    - TG_TOKEN=TelegramBotToken
