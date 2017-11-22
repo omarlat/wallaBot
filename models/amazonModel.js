@@ -1,4 +1,3 @@
-var pool = require('../dbconnection');
 var Datastore = require('nedb');
 
 var db = {};
