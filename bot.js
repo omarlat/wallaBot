@@ -1,6 +1,5 @@
 var TelegramBot = require('node-telegram-bot-api');
 var telegramToken = process.env.TG_TOKEN;
-var telegramChatId = process.env.TG_CHAT_ID;
 var bot = new TelegramBot(telegramToken, {polling: true});
 var amazonModel = require('./models/amazonModel.js');
 
